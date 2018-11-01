@@ -29,6 +29,11 @@ public class Step {
         this.description = stepDescription;
     }
 
+    @Ignore
+    public Step() {
+
+    }
+
     public long getId() {
         return id;
     }

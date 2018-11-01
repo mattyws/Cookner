@@ -3,6 +3,7 @@ package com.mattyws.udacity.cookner.viewmodel;
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
+import android.content.Context;
 
 import com.mattyws.udacity.cookner.database.AppDatabase;
 import com.mattyws.udacity.cookner.database.RecipeRepository;
@@ -14,9 +15,9 @@ public class AddStepViewModel extends ViewModel {
     private RecipeRepository mRepository;
     private LiveData<Step> stepLiveData;
 
-    public AddStepViewModel(Application application, long stepId) {
-        mRepository = new RecipeRepository(application);
-        AppDatabase db = AppDatabase.getInstance(application);
+    public AddStepViewModel(Context context, long stepId) {
+        mRepository = new RecipeRepository(context);
+        AppDatabase db = AppDatabase.getInstance(context);
         stepLiveData = mRepository.getStepById(stepId);
     }
 

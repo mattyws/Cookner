@@ -111,7 +111,7 @@ public class StepListFragment extends Fragment implements RecyclerViewClickListe
 
     public void fetchAndPopulateRecipeSteps(long recipeId){
         if(mViewModel == null) {
-            StepViewModelFactory factory = new StepViewModelFactory(getActivity().getApplication(), recipeId);
+            StepViewModelFactory factory = new StepViewModelFactory(getActivity(), recipeId);
             mViewModel = ViewModelProviders.of(this, factory)
                     .get(StepViewModel.class);
         }

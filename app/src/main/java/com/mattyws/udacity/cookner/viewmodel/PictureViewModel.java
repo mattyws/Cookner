@@ -3,6 +3,7 @@ package com.mattyws.udacity.cookner.viewmodel;
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
+import android.content.Context;
 
 import com.mattyws.udacity.cookner.database.RecipeRepository;
 import com.mattyws.udacity.cookner.database.entities.Picture;
@@ -15,8 +16,8 @@ public class PictureViewModel extends ViewModel {
     private RecipeRepository mRepository;
     private LiveData<List<Picture>> mPictures;
 
-    public PictureViewModel(Application application, long recipeId) {
-        mRepository = new RecipeRepository(application);
+    public PictureViewModel(Context context, long recipeId) {
+        mRepository = new RecipeRepository(context);
         mPictures = mRepository.getRecipePictures(recipeId);
     }
 

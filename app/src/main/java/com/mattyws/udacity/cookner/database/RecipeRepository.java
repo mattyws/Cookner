@@ -2,6 +2,7 @@ package com.mattyws.udacity.cookner.database;
 
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
+import android.content.Context;
 import android.os.AsyncTask;
 
 import com.mattyws.udacity.cookner.database.dao.IngredientDAO;
@@ -28,8 +29,8 @@ public class RecipeRepository {
         void performOperation(Long newItemId);
     }
 
-    public RecipeRepository(Application application) {
-        AppDatabase db = AppDatabase.getInstance(application);
+    public RecipeRepository(Context context) {
+        AppDatabase db = AppDatabase.getInstance(context);
         mRecipeDAO = db.recipeDAO();
         mIngredientDAO = db.ingredientsDAO();
         mStepsDAO = db.stepDAO();

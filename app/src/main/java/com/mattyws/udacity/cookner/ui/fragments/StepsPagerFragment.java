@@ -12,12 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.mattyws.udacity.cookner.R;
-import com.mattyws.udacity.cookner.database.entities.Picture;
 import com.mattyws.udacity.cookner.database.entities.Step;
-import com.mattyws.udacity.cookner.databinding.FragmentImagePagerBinding;
-import com.mattyws.udacity.cookner.ui.adapters.ImagesPagerAdapter;
-import com.mattyws.udacity.cookner.viewmodel.PictureViewModel;
-import com.mattyws.udacity.cookner.viewmodel.PictureViewModelFactory;
+import com.mattyws.udacity.cookner.databinding.FragmentStepsPagerBinding;
+import com.mattyws.udacity.cookner.ui.adapters.StepsPagerAdapter;
 import com.mattyws.udacity.cookner.viewmodel.StepViewModel;
 import com.mattyws.udacity.cookner.viewmodel.StepViewModelFactory;
 
@@ -26,44 +23,46 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ImagePagerFragment extends Fragment {
+public class StepsPagerFragment extends Fragment {
 
-    private FragmentImagePagerBinding mDataBinding;
-    private ImagesPagerAdapter mAdapter;
-    private PictureViewModel mViewModel;
+    private FragmentStepsPagerBinding mDataBinding;
+    private StepsPagerAdapter mAdapter;
+    private StepViewModel mViewModel;
 
-    public ImagePagerFragment() {}
+    public StepsPagerFragment() {
+        // Required empty public constructor
+    }
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        mDataBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_image_pager,
+        mDataBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_steps_pager,
                 container, false);
-        mAdapter = new ImagesPagerAdapter(getContext(), null);
-        mDataBinding.imageViewPager.setAdapter(mAdapter);
-        mDataBinding.indicator.setViewPager(mDataBinding.imageViewPager);
+        mAdapter = new StepsPagerAdapter(getContext(), null);
+        mDataBinding.stepsPager.setAdapter(mAdapter);
+        mDataBinding.indicator.setViewPager(mDataBinding.stepsPager);
         mAdapter.registerDataSetObserver(mDataBinding.indicator.getDataSetObserver());
         return mDataBinding.getRoot();
     }
 
     public void fetchAndPopulateRecipePictures(long recipeId){
         if(mViewModel == null) {
-            PictureViewModelFactory factory = new PictureViewModelFactory(getActivity(), recipeId);
+            StepViewModelFactory factory = new StepViewModelFactory(getActivity(), recipeId);
             mViewModel = ViewModelProviders.of(this, factory)
-                    .get(PictureViewModel.class);
+                    .get(StepViewModel.class);
         }
-        mViewModel.getRecipePictures().observe(this, new Observer<List<Picture>>() {
+        mViewModel.getRecipeSteps().observe(this, new Observer<List<Step>>() {
             @Override
-            public void onChanged(@Nullable List<Picture> pictures) {
-                setPictures(pictures);
+            public void onChanged(@Nullable List<Step> steps) {
+                setSteps(steps);
             }
         });
     }
 
-    public void setPictures(List<Picture> pictures){
-        mAdapter.setPictures(pictures);
+    public void setSteps(List<Step> pictures){
+        mAdapter.setSteps(pictures);
     }
 
 }

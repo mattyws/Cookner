@@ -1,11 +1,13 @@
 package com.mattyws.udacity.cookner.ui;
 
 import android.content.Intent;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.mattyws.udacity.cookner.R;
 import com.mattyws.udacity.cookner.ui.fragments.IngredientListFragment;
+import com.mattyws.udacity.cookner.ui.fragments.StepsPagerFragment;
 
 public class CookingViewActivity extends AppCompatActivity {
 
@@ -14,6 +16,7 @@ public class CookingViewActivity extends AppCompatActivity {
     private long mRecipeId = DEFAULT_RECIPE_ID;
 
     private IngredientListFragment mIngredientListFragment;
+    private StepsPagerFragment mStepsPagerFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,8 +28,21 @@ public class CookingViewActivity extends AppCompatActivity {
         mRecipeId = intent.getLongExtra(RECIPE_ID, DEFAULT_RECIPE_ID);
         mIngredientListFragment = new IngredientListFragment();
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.form_fragment, mIngredientListFragment)
+                .add(R.id.ingredient_list_holder, mIngredientListFragment)
                 .commit();
-        mIngredientListFragment.fetchAndPopulateRecipeIngredient(mRecipeId);
+        mStepsPagerFragment = new StepsPagerFragment();
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.step_content_holder, mStepsPagerFragment)
+                .commit();
+    }
+
+    @Override
+    public void onAttachFragment(Fragment fragment) {
+        super.onAttachFragment(fragment);
+        if (fragment == mIngredientListFragment){
+            mIngredientListFragment.fetchAndPopulateRecipeIngredient(mRecipeId);
+        } else if(fragment == mStepsPagerFragment){
+            mStepsPagerFragment.fetchAndPopulateRecipePictures(mRecipeId);
+        }
     }
 }

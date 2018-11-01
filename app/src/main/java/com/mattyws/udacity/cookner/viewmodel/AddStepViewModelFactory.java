@@ -3,14 +3,15 @@ package com.mattyws.udacity.cookner.viewmodel;
 import android.app.Application;
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
+import android.content.Context;
 
 public class AddStepViewModelFactory extends ViewModelProvider.NewInstanceFactory {
 
-    private final Application mContext;
+    private final Context mContext;
     private final long mStepId;
 
-    public AddStepViewModelFactory(Application application, long stepId) {
-        mContext = application;
+    public AddStepViewModelFactory(Context context, long stepId) {
+        mContext = context;
         mStepId = stepId;
     }
     @Override

@@ -69,8 +69,9 @@ public class IngredientListFragment extends Fragment implements
     }
 
     public void fetchAndPopulateRecipeIngredient(long recipeId){
+        Log.d(TAG, "fetchAndPopulateRecipeIngredient: ");
         if(mViewModel == null) {
-            IngredientViewModelFactory factory = new IngredientViewModelFactory(getActivity().getApplication(), recipeId);
+            IngredientViewModelFactory factory = new IngredientViewModelFactory(getActivity(), recipeId);
             mViewModel = ViewModelProviders.of(this, factory)
                     .get(IngredientViewModel.class);
         }

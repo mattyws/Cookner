@@ -3,14 +3,15 @@ package com.mattyws.udacity.cookner.viewmodel;
 import android.app.Application;
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
+import android.content.Context;
 
 public class RecipeViewModelFactory extends ViewModelProvider.NewInstanceFactory {
 
-    private final Application mContext;
+    private final Context mContext;
     private final long mRecipeId;
 
-    public RecipeViewModelFactory(Application application, long recipeId) {
-        mContext = application;
+    public RecipeViewModelFactory(Context context, long recipeId) {
+        mContext = context;
         mRecipeId = recipeId;
     }
     @Override
