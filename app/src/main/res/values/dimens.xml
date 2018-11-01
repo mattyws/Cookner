@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="standard_45">45dp</dimen>
+    <dimen name="snackbar_elevation">6dp</dimen>
+    <dimen name="app_bar_elevation">8dp</dimen>
+    <dimen name="fab_elevation">12dp</dimen>
+    <dimen name="standard_21">21dp</dimen>
+    <dimen name="fab_margin">8dp</dimen>
+    <dimen name="standard_55">55dp</dimen>
+    <dimen name="standard_23">23dp</dimen>
+    <dimen name="standard_12">12dp</dimen>
+    <dimen name="standard_8">8dp</dimen>
+    <dimen name="standard_6">6dp</dimen>
+    <dimen name="standard_100">100dp</dimen>
+    <dimen name="progress_bar_dimen">44dp</dimen>
+    <dimen name="standard_4">4dp</dimen>
+    <dimen name="standard_145">145dp</dimen>
+    <dimen name="standard_24">24dp</dimen>
+</resources>

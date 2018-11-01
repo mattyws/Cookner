@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:mContext=".ui.FormRecipeActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:fitsSystemWindows="true"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/app_bar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:layout_collapseMode="pin"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <ProgressBar
+        android:id="@+id/content_progress_bar"
+        android:layout_width="@dimen/progress_bar_dimen"
+        android:layout_height="@dimen/progress_bar_dimen"
+        android:layout_gravity="center"
+        android:visibility="visible"
+        />
+
+    <FrameLayout
+        android:id="@+id/content_holder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <FrameLayout
+                    android:id="@+id/pictures_pager_holder"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp" />
+
+                <FrameLayout
+                    android:id="@+id/ingredient_list_holder"
+
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <FrameLayout
+                    android:id="@+id/step_list_holder"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+        </ScrollView>
+    </FrameLayout>
+
+        <View
+            android:id="@+id/fabBGLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorTransBg"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/photo_fab_linear_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:clipToPadding="false"
+            android:gravity="center_vertical"
+            android:padding="@dimen/standard_6"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/add_photo" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/add_photo_fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
+                app:fabSize="mini"
+                app:srcCompat="@drawable/ic_add_black_24dp" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/ingredient_fab_linear_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:clipToPadding="false"
+            android:gravity="center_vertical"
+            android:padding="@dimen/standard_6"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/add_ingredient" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/add_ingredient_fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
+                app:fabSize="mini"
+                app:srcCompat="@drawable/ic_add_black_24dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/step_fab_linear_layout"
+            android:layout_width="168dp"
+            android:layout_height="46dp"
+            android:layout_gravity="bottom|end"
+            android:clipToPadding="false"
+            android:gravity="center_vertical"
+            android:padding="@dimen/standard_6"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/add_step" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/add_step_fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
+                app:fabSize="mini"
+                app:srcCompat="@drawable/ic_add_black_24dp" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:clipToPadding="false"
+            android:gravity="center_vertical"
+            android:padding="@dimen/standard_12">
+
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/add_fab_menu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:gravity="center_vertical"
+                app:fabSize="normal"
+                app:srcCompat="@drawable/ic_add_black_24dp" />
+        </LinearLayout>
+
+</android.support.design.widget.CoordinatorLayout>
