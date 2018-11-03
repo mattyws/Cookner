@@ -24,7 +24,6 @@ public class RecipeViewModel extends ViewModel {
 
     public RecipeViewModel(Context context, long recipeId) {
         mRepository = new RecipeRepository(context);
-        AppDatabase db = AppDatabase.getInstance(context);
         recipeLiveData = mRepository.getRecipeById(recipeId);
         recipeIngredients = mRepository.getRecipeIngredients(recipeId);
         recipePictures = mRepository.getRecipePictures(recipeId);
@@ -49,4 +48,8 @@ public class RecipeViewModel extends ViewModel {
     public LiveData<List<Picture>> getRecipePictures() {
         return recipePictures;
     }
+
+    public void delete(Step deletedStep) {mRepository.delete(deletedStep);}
+
+    public void delete(Ingredient removedIngredient) {mRepository.delete(removedIngredient);}
 }

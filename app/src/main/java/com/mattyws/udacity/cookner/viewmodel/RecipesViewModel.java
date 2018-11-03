@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 
 import com.mattyws.udacity.cookner.database.RecipeRepository;
 import com.mattyws.udacity.cookner.database.entities.Ingredient;
+import com.mattyws.udacity.cookner.database.entities.Picture;
 import com.mattyws.udacity.cookner.database.entities.Recipe;
 import com.mattyws.udacity.cookner.database.entities.Step;
 
@@ -36,6 +37,7 @@ public class RecipesViewModel extends AndroidViewModel {
     public LiveData<Recipe> getRecipeById(long id) {
         return mRepository.getRecipeById(id);
     }
+    public LiveData<List<Picture>> getRecipePictures(long recipeId){return mRepository.getRecipePictures(recipeId);}
 
     public void delete(Recipe recipe) {
         mRepository.delete(recipe);

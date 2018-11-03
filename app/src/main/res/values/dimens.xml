@@ -16,4 +16,5 @@
     <dimen name="standard_4">4dp</dimen>
     <dimen name="standard_145">145dp</dimen>
     <dimen name="standard_24">24dp</dimen>
+    <dimen name="recipe_cell_margin">16dp</dimen>
 </resources>

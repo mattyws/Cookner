@@ -3,6 +3,7 @@ package com.mattyws.udacity.cookner.ui.fragments;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.Color;
@@ -43,7 +44,8 @@ public class StepListFragment extends Fragment implements RecyclerViewClickListe
     private static final String TAG = StepListFragment.class.getCanonicalName();
     private StepListAdapter mAdapter;
     private FragmentStepListBinding mDataBinding;
-    private StepViewModel mViewModel;
+//    private StepViewModel mViewModel;
+    private StepListListener mListener;
 
 
     public StepListFragment() {}
@@ -101,7 +103,8 @@ public class StepListFragment extends Fragment implements RecyclerViewClickListe
 //                    super.onDismissed(transientBottomBar, event);
                     if(event == Snackbar.Callback.DISMISS_EVENT_TIMEOUT) {
                         Log.d(TAG, "onDismissed: ");
-                        mViewModel.delete(removedStep);
+                        mListener.onStepSwipedDismiss(removedStep);
+//                        mViewModel.delete(removedStep);
                     }
                 }
             });
@@ -109,17 +112,32 @@ public class StepListFragment extends Fragment implements RecyclerViewClickListe
         }
     }
 
-    public void fetchAndPopulateRecipeSteps(long recipeId){
-        if(mViewModel == null) {
-            StepViewModelFactory factory = new StepViewModelFactory(getActivity(), recipeId);
-            mViewModel = ViewModelProviders.of(this, factory)
-                    .get(StepViewModel.class);
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof StepListListener) {
+            mListener = (StepListListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
         }
-        mViewModel.getRecipeSteps().observe(this, new Observer<List<Step>>() {
-            @Override
-            public void onChanged(@Nullable List<Step> steps) {
-                setSteps(steps);
-            }
-        });
+    }
+
+//    public void fetchAndPopulateRecipeSteps(long recipeId){
+//        if(mViewModel == null) {
+//            StepViewModelFactory factory = new StepViewModelFactory(getActivity(), recipeId);
+//            mViewModel = ViewModelProviders.of(this, factory)
+//                    .get(StepViewModel.class);
+//        }
+//        mViewModel.getRecipeSteps().observe(this, new Observer<List<Step>>() {
+//            @Override
+//            public void onChanged(@Nullable List<Step> steps) {
+//                setSteps(steps);
+//            }
+//        });
+//    }
+
+    public interface StepListListener{
+        void onStepSwipedDismiss(Step deletedStep);
     }
 }

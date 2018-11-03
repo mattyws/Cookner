@@ -3,6 +3,7 @@ package com.mattyws.udacity.cookner.ui.adapters;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.mattyws.udacity.cookner.R;
+import com.mattyws.udacity.cookner.database.entities.Picture;
 import com.mattyws.udacity.cookner.database.entities.Recipe;
 import com.mattyws.udacity.cookner.ui.RecyclerViewClickListener;
 
@@ -41,6 +43,7 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
     public void onBindViewHolder(@NonNull final RecipeListAdapter.RecipeViewHolder recipeViewHolder, final int i) {
         recipeViewHolder.mRecipeName.setText(mRecipes.get(i).getName());
         recipeViewHolder.id = mRecipes.get(i).getId();
+        recipeViewHolder.mAdapter.setPictures(mRecipes.get(i).getPictures());
         recipeViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -53,6 +56,11 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
     public int getItemCount() {
         if(mRecipes != null) return mRecipes.size();
         return 0;
+    }
+
+    public void setViewPictures(int position, List<Picture> pictures){
+        mRecipes.get(position).setPictures(pictures);
+        notifyItemChanged(position);
     }
 
     public void swapLists(List<Recipe> newRecipes){
@@ -79,6 +87,8 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
 
         public long id;
         public TextView mRecipeName;
+        ViewPager mViewPager;
+        ImagesPagerAdapter mAdapter;
         public ConstraintLayout mForegroundView, mBackgroundView;
 
         public RecipeViewHolder(@NonNull View itemView) {
@@ -86,6 +96,10 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
             mRecipeName = (TextView) itemView.findViewById(R.id.recipe_name);
             mForegroundView = (ConstraintLayout) itemView.findViewById(R.id.foreground_view);
             mBackgroundView = (ConstraintLayout) itemView.findViewById(R.id.background_view);
+
+            mViewPager = (ViewPager) itemView.findViewById(R.id.recipe_photo_pager);
+            mAdapter = new ImagesPagerAdapter(mContext, null);
+            mViewPager.setAdapter(mAdapter);
         }
     }
 }

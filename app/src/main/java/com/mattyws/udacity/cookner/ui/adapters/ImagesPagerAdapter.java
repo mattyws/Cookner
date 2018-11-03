@@ -2,6 +2,7 @@ package com.mattyws.udacity.cookner.ui.adapters;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Parcelable;
 import android.provider.MediaStore;
@@ -23,7 +24,6 @@ import java.util.List;
 
 public class ImagesPagerAdapter extends PagerAdapter {
 
-
     private static final String TAG = ImagesPagerAdapter.class.getCanonicalName();
     private List<Picture> mPictures;
     private LayoutInflater inflater;
@@ -32,7 +32,7 @@ public class ImagesPagerAdapter extends PagerAdapter {
 
     public ImagesPagerAdapter(Context mContext, List<Picture> pictures) {
         this.mContext = mContext;
-        this.mPictures =pictures;
+        this.mPictures = pictures;
         inflater = LayoutInflater.from(mContext);
     }
 
@@ -50,23 +50,29 @@ public class ImagesPagerAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(ViewGroup view, int position) {
         View imageLayout = inflater.inflate(R.layout.image_cell, view, false);
-
         assert imageLayout != null;
         final ImageView imageView = (ImageView) imageLayout
                 .findViewById(R.id.recipe_image);
-        File file = new File(mContext.getFilesDir().toString() , mPictures.get(position).getFilename());
-        Uri fileUri = Uri.fromFile(file);
-        Log.d(TAG, "instantiateItem: " + fileUri.toString());
-        try {
-            Bitmap bitmap = MediaStore.Images.Media.getBitmap(mContext.getContentResolver(), fileUri);
-            imageView.setImageBitmap(bitmap);
-        } catch (IOException e) {
-            e.printStackTrace();
+        Picture picture = mPictures.get(position);
+
+        if(picture == null && mPictures.size() <= 1){
+            Log.d(TAG, "instantiateItem: picture null");
+            imageView.setImageResource(R.drawable.noimage);
+        } else if (picture != null){
+            Log.d(TAG, "instantiateItem: picture not null");
+            File file = new File(mContext.getFilesDir().toString(), picture.getFilename());
+            Uri fileUri = Uri.fromFile(file);
+            Log.d(TAG, "instantiateItem: " + fileUri.toString());
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(mContext.getContentResolver(), fileUri);
+                imageView.setImageBitmap(bitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 //        Glide.with(mContext)
 //                .load(file)
 //                .into(imageView);
-
         view.addView(imageLayout, 0);
 
         return imageLayout;
@@ -87,16 +93,11 @@ public class ImagesPagerAdapter extends PagerAdapter {
     }
 
     public void setPictures(List<Picture> pictures) {
-        if (pictures == null){
+        if(pictures == null){
             pictures = new ArrayList<>();
         }
-        if(pictures.isEmpty()){
-            String noImageFile = "drawable://" + R.drawable.noimage;
-            String filename = "noimage.jpg";
-            Picture picture = new Picture();
-            picture.setAbsoluteFilepath(noImageFile);
-            picture.setFilename(filename);
-            pictures.add(picture);
+        if(pictures.size() == 0){
+            pictures.add(null);
         }
         this.mPictures = pictures;
         notifyDataSetChanged();

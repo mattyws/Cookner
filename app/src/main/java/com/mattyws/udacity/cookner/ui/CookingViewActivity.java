@@ -36,13 +36,13 @@ public class CookingViewActivity extends AppCompatActivity {
                 .commit();
     }
 
-    @Override
-    public void onAttachFragment(Fragment fragment) {
-        super.onAttachFragment(fragment);
-        if (fragment == mIngredientListFragment){
-            mIngredientListFragment.fetchAndPopulateRecipeIngredient(mRecipeId);
-        } else if(fragment == mStepsPagerFragment){
-            mStepsPagerFragment.fetchAndPopulateRecipePictures(mRecipeId);
-        }
-    }
+//    @Override
+//    public void onAttachFragment(Fragment fragment) {
+//        super.onAttachFragment(fragment);
+//        if (fragment == mIngredientListFragment){
+//            mIngredientListFragment.fetchAndPopulateRecipeIngredient(mRecipeId);
+//        } else if(fragment == mStepsPagerFragment){
+//            mStepsPagerFragment.fetchAndPopulateRecipePictures(mRecipeId);
+//        }
+//    }
 }

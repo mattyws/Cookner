@@ -44,7 +44,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class FormRecipeActivity extends AppCompatActivity implements RecipeRepository.InsertDataListener {
+public class FormRecipeActivity extends AppCompatActivity implements
+        RecipeRepository.InsertDataListener,
+        IngredientListFragment.IngredientListListener,
+        StepListFragment.StepListListener
+
+{
 
     // TODO: comment
     // TODO: add photo picker and add database logic to handle photos
@@ -209,7 +214,6 @@ public class FormRecipeActivity extends AppCompatActivity implements RecipeRepos
                     intent.setType("image/jpeg");
                     intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
                     startActivityForResult(Intent.createChooser(intent, "Complete action using"), RC_PHOTO_PICKER);
-                } else {
                 }
             }
         }
@@ -217,32 +221,31 @@ public class FormRecipeActivity extends AppCompatActivity implements RecipeRepos
     }
 
     private void populateUI(Recipe recipe) {
-        // TODO: add callback on fragments to change the visibility to visible, maybe on pictures since take more time to load
         mToolbar.setTitle("Add " + recipe.getName());
         mRecipe = recipe;
-        mIngredientListFragment.fetchAndPopulateRecipeIngredient(recipe.getId());
-        mStepListFragment.fetchAndPopulateRecipeSteps(recipe.getId());
-        mImagePagerFragment.fetchAndPopulateRecipePictures(recipe.getId());
-        swapVisibility();
-//        mViewModel.getRecipeIngredientsLiveData().observe(this, new Observer<List<Ingredient>>() {
-//            @Override
-//            public void onChanged(@Nullable List<Ingredient> ingredients) {
-//                setRecipeIngredients(ingredients);
-//            }
-//        });
-//        mViewModel.getRecipeStepsLiveData().observe(this, new Observer<List<Step>>() {
-//            @Override
-//            public void onChanged(@Nullable List<Step> steps) {
-//                setRecipeSteps(steps);
-//            }
-//        });
-//        mViewModel.getRecipePictures().observe(this, new Observer<List<Picture>>() {
-//            @Override
-//            public void onChanged(@Nullable List<Picture> pictures) {
-//                setRecipePictures(pictures);
-//                swapVisibility();
-//            }
-//        });
+//        mIngredientListFragment.fetchAndPopulateRecipeIngredient(recipe.getId());
+//        mStepListFragment.fetchAndPopulateRecipeSteps(recipe.getId());
+//        mImagePagerFragment.fetchAndPopulateRecipePictures(recipe.getId());
+//        swapVisibility();
+        mViewModel.getRecipeIngredientsLiveData().observe(this, new Observer<List<Ingredient>>() {
+            @Override
+            public void onChanged(@Nullable List<Ingredient> ingredients) {
+                setRecipeIngredients(ingredients);
+            }
+        });
+        mViewModel.getRecipeStepsLiveData().observe(this, new Observer<List<Step>>() {
+            @Override
+            public void onChanged(@Nullable List<Step> steps) {
+                setRecipeSteps(steps);
+            }
+        });
+        mViewModel.getRecipePictures().observe(this, new Observer<List<Picture>>() {
+            @Override
+            public void onChanged(@Nullable List<Picture> pictures) {
+                setRecipePictures(pictures);
+                swapVisibility();
+            }
+        });
     }
 
     private void showFABMenu() {
@@ -385,4 +388,13 @@ public class FormRecipeActivity extends AppCompatActivity implements RecipeRepos
         mImagePagerFragment.setPictures(pictures);
     }
 
+    @Override
+    public void onIngredientSwipedDismiss(Ingredient removedIngredient) {
+        mViewModel.delete(removedIngredient);
+    }
+
+    @Override
+    public void onStepSwipedDismiss(Step deletedStep) {
+        mViewModel.delete(deletedStep);
+    }
 }

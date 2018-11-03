@@ -12,6 +12,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -21,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.mattyws.udacity.cookner.R;
+import com.mattyws.udacity.cookner.database.entities.Picture;
 import com.mattyws.udacity.cookner.database.entities.Recipe;
 import com.mattyws.udacity.cookner.databinding.FragmentRecipeListBinding;
 import com.mattyws.udacity.cookner.ui.FormRecipeActivity;
@@ -59,10 +61,9 @@ public class RecipeListFragment extends Fragment implements
                 container, false);
         mAdapter = new RecipeListAdapter(mDataBinding.getRoot().getContext(), null, this);
 
-        mDataBinding.recipeListRv.setLayoutManager(new LinearLayoutManager(mDataBinding.getRoot().getContext()));
+        mDataBinding.recipeListRv.setLayoutManager(new GridLayoutManager(mDataBinding.getRoot().getContext(), 2));
         mDataBinding.recipeListRv.setAdapter(mAdapter);
         mDataBinding.recipeListRv.setItemAnimator(new DefaultItemAnimator());
-        mDataBinding.recipeListRv.addItemDecoration(new DividerItemDecoration(mDataBinding.getRoot().getContext(), DividerItemDecoration.VERTICAL));
 
         mViewModel = ViewModelProviders.of(this).get(RecipesViewModel.class);
 
@@ -73,14 +74,26 @@ public class RecipeListFragment extends Fragment implements
             }
         });
 
-        ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecipeListItemTouchHelper(0, ItemTouchHelper.LEFT, this);
-        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(mDataBinding.recipeListRv);
+//        ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecipeListItemTouchHelper(0, ItemTouchHelper.LEFT, this);
+//        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(mDataBinding.recipeListRv);
 
         return mDataBinding.getRoot();
     }
 
     private void populateUI(List<Recipe> recipes) {
+        // TODO : load pictures
         mAdapter.swapLists(recipes);
+        Log.d(TAG, "populateUI: ");
+        for(int i = 0; i<recipes.size(); i++){
+            final int finalI = i;
+            mViewModel.getRecipePictures(recipes.get(i).getId()).observe(this, new Observer<List<Picture>>() {
+                @Override
+                public void onChanged(@Nullable List<Picture> pictures) {
+                    Log.d(TAG, "onpicturechanged: " + pictures.size());
+                    mAdapter.setViewPictures(finalI, pictures);
+                }
+            });
+        }
     }
 
     @Override

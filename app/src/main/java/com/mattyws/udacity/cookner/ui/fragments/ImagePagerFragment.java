@@ -7,9 +7,11 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.mattyws.udacity.cookner.R;
 import com.mattyws.udacity.cookner.database.entities.Picture;
@@ -23,14 +25,16 @@ import com.mattyws.udacity.cookner.viewmodel.StepViewModelFactory;
 
 import java.util.List;
 
+
 /**
  * A simple {@link Fragment} subclass.
  */
 public class ImagePagerFragment extends Fragment {
 
+    private static final String TAG = ImagePagerFragment.class.getCanonicalName();
     private FragmentImagePagerBinding mDataBinding;
     private ImagesPagerAdapter mAdapter;
-    private PictureViewModel mViewModel;
+//    private PictureViewModel mViewModel;
 
     public ImagePagerFragment() {}
 
@@ -48,22 +52,26 @@ public class ImagePagerFragment extends Fragment {
         return mDataBinding.getRoot();
     }
 
-    public void fetchAndPopulateRecipePictures(long recipeId){
-        if(mViewModel == null) {
-            PictureViewModelFactory factory = new PictureViewModelFactory(getActivity(), recipeId);
-            mViewModel = ViewModelProviders.of(this, factory)
-                    .get(PictureViewModel.class);
-        }
-        mViewModel.getRecipePictures().observe(this, new Observer<List<Picture>>() {
-            @Override
-            public void onChanged(@Nullable List<Picture> pictures) {
-                setPictures(pictures);
-            }
-        });
-    }
+//    public void fetchAndPopulateRecipePictures(long recipeId){
+//        if(mViewModel == null) {
+//            PictureViewModelFactory factory = new PictureViewModelFactory(getActivity(), recipeId);
+//            mViewModel = ViewModelProviders.of(this, factory)
+//                    .get(PictureViewModel.class);
+//        }
+//        mViewModel.getRecipePictures().observe(this, new Observer<List<Picture>>() {
+//            @Override
+//            public void onChanged(@Nullable List<Picture> pictures) {
+//                Log.d(TAG, "onChanged: changing pictures");
+//                setPictures(pictures);
+//            }
+//        });
+//    }
 
     public void setPictures(List<Picture> pictures){
         mAdapter.setPictures(pictures);
     }
 
+    public void notifyDatasetChanged() {
+        mAdapter.notifyDataSetChanged();
+    }
 }

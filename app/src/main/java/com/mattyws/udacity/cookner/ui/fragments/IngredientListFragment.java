@@ -3,6 +3,7 @@ package com.mattyws.udacity.cookner.ui.fragments;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.Color;
@@ -44,7 +45,8 @@ public class IngredientListFragment extends Fragment implements
     private IngredientListAdapter mAdapter;
     private FragmentIngredientListBinding mDataBinding;
 
-    private IngredientViewModel mViewModel;
+//    private IngredientViewModel mViewModel;
+    private IngredientListListener mListener;
 
 
     public IngredientListFragment() {
@@ -68,20 +70,20 @@ public class IngredientListFragment extends Fragment implements
         return mDataBinding.getRoot();
     }
 
-    public void fetchAndPopulateRecipeIngredient(long recipeId){
-        Log.d(TAG, "fetchAndPopulateRecipeIngredient: ");
-        if(mViewModel == null) {
-            IngredientViewModelFactory factory = new IngredientViewModelFactory(getActivity(), recipeId);
-            mViewModel = ViewModelProviders.of(this, factory)
-                    .get(IngredientViewModel.class);
-        }
-        mViewModel.getRecipeIngredients().observe(this, new Observer<List<Ingredient>>() {
-            @Override
-            public void onChanged(@Nullable List<Ingredient> ingredients) {
-                setIngredients(ingredients);
-            }
-        });
-    }
+//    public void fetchAndPopulateRecipeIngredient(long recipeId){
+//        Log.d(TAG, "fetchAndPopulateRecipeIngredient: ");
+//        if(mViewModel == null) {
+//            IngredientViewModelFactory factory = new IngredientViewModelFactory(getActivity(), recipeId);
+//            mViewModel = ViewModelProviders.of(this, factory)
+//                    .get(IngredientViewModel.class);
+//        }
+//        mViewModel.getRecipeIngredients().observe(this, new Observer<List<Ingredient>>() {
+//            @Override
+//            public void onChanged(@Nullable List<Ingredient> ingredients) {
+//                setIngredients(ingredients);
+//            }
+//        });
+//    }
 
     public void setIngredients(List<Ingredient> mIngredients) {
         mAdapter.swapLists(mIngredients);
@@ -111,7 +113,8 @@ public class IngredientListFragment extends Fragment implements
 //                    super.onDismissed(transientBottomBar, event);
                     if(event == Snackbar.Callback.DISMISS_EVENT_TIMEOUT) {
                         Log.d(TAG, "onDismissed: ");
-                        mViewModel.delete(removedIngredient);
+                        mListener.onIngredientSwipedDismiss(removedIngredient);
+//                        mViewModel.delete(removedIngredient);
                     }
                 }
             });
@@ -119,6 +122,16 @@ public class IngredientListFragment extends Fragment implements
         }
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof IngredientListListener) {
+            mListener = (IngredientListListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
 
 
     @Override
@@ -127,5 +140,9 @@ public class IngredientListFragment extends Fragment implements
         editIngredientIntent.putExtra(FormActivity.FORMULARY, FormActivity.INGREDIENT_FORM);
         editIngredientIntent.putExtra(FormActivity.ITEM_ID, id);
         startActivity(editIngredientIntent);
+    }
+
+    public interface IngredientListListener{
+        void onIngredientSwipedDismiss(Ingredient removedIngredient);
     }
 }
