@@ -6,6 +6,7 @@
     <dimen name="fab_elevation">12dp</dimen>
     <dimen name="standard_21">21dp</dimen>
     <dimen name="fab_margin">8dp</dimen>
+    <dimen name="fab_margin_mini">10dp</dimen>
     <dimen name="standard_55">55dp</dimen>
     <dimen name="standard_23">23dp</dimen>
     <dimen name="standard_12">12dp</dimen>
@@ -17,4 +18,6 @@
     <dimen name="standard_145">145dp</dimen>
     <dimen name="standard_24">24dp</dimen>
     <dimen name="recipe_cell_margin">16dp</dimen>
+    <dimen name="fab_marging">16dp</dimen>
+    <dimen name="measure_input_width">170dp</dimen>
 </resources>

@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/background_view"
@@ -21,7 +21,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/textView4"
             app:layout_constraintEnd_toStartOf="@+id/textView4"
             app:layout_constraintTop_toTopOf="@+id/textView4"
-            app:srcCompat="@drawable/ic_delete_black" />
+            app:srcCompat="@drawable/ic_delete_black"/>
 
         <TextView
             android:id="@+id/textView4"

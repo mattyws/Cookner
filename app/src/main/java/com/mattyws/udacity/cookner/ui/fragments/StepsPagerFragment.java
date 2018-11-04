@@ -15,6 +15,7 @@ import com.mattyws.udacity.cookner.R;
 import com.mattyws.udacity.cookner.database.entities.Step;
 import com.mattyws.udacity.cookner.databinding.FragmentStepsPagerBinding;
 import com.mattyws.udacity.cookner.ui.adapters.StepsPagerAdapter;
+import com.mattyws.udacity.cookner.viewmodel.RecipeViewModel;
 import com.mattyws.udacity.cookner.viewmodel.StepViewModel;
 import com.mattyws.udacity.cookner.viewmodel.StepViewModelFactory;
 
@@ -25,12 +26,21 @@ import java.util.List;
  */
 public class StepsPagerFragment extends Fragment {
 
+    private static final String RECIPE_ID = "recipe.id";
     private FragmentStepsPagerBinding mDataBinding;
     private StepsPagerAdapter mAdapter;
     private StepViewModel mViewModel;
 
     public StepsPagerFragment() {
         // Required empty public constructor
+    }
+
+    public static StepsPagerFragment newInstance(long recipeId){
+        StepsPagerFragment fragment = new StepsPagerFragment();
+        Bundle bundle = new Bundle();
+        bundle.putLong(RECIPE_ID, recipeId);
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
 
@@ -44,6 +54,13 @@ public class StepsPagerFragment extends Fragment {
         mDataBinding.stepsPager.setAdapter(mAdapter);
         mDataBinding.indicator.setViewPager(mDataBinding.stepsPager);
         mAdapter.registerDataSetObserver(mDataBinding.indicator.getDataSetObserver());
+        ViewModelProviders.of(getActivity()).get(RecipeViewModel.class).getRecipeStepsLiveData()
+                .observe(this, new Observer<List<Step>>() {
+                    @Override
+                    public void onChanged(@Nullable List<Step> steps) {
+                        mAdapter.setSteps(steps);
+                    }
+                });
         return mDataBinding.getRoot();
     }
 

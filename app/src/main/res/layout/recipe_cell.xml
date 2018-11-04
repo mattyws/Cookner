@@ -2,8 +2,8 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:elevation="4dp"
     android:layout_margin="@dimen/recipe_cell_margin"
-    android:background="#f9f9f7"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
@@ -46,14 +46,25 @@
         android:id="@+id/foreground_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#fff"
+        android:background="@color/colorAccent"
         android:visibility="visible">
 
         <android.support.v4.view.ViewPager
             android:id="@+id/recipe_photo_pager"
             android:layout_width="175dp"
             android:layout_height="145dp"
+            android:transitionName="@string/image_pager_shared_name"
             app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageView
+            android:id="@+id/bottom_div"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/recipe_photo_pager"
+            app:srcCompat="@color/colorTransBg" />
 
         <TextView
             android:id="@+id/recipe_name"
@@ -67,49 +78,18 @@
             app:layout_constraintTop_toBottomOf="@+id/recipe_photo_pager"
             tools:text="teste" />
 
-        <LinearLayout
-            android:id="@+id/edit_view"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="16dp"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="@+id/recipe_name"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/recipe_name"
-            app:layout_constraintTop_toTopOf="@+id/recipe_name">
-
-            <ImageView
-                android:id="@+id/edit_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginEnd="@dimen/standard_4"
-                android:layout_marginLeft="@dimen/standard_8"
-                android:layout_marginRight="@dimen/standard_4"
-                android:layout_marginStart="@dimen/standard_8"
-                app:srcCompat="@drawable/ic_edit_black" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginRight="@dimen/standard_8"
-                android:text="@string/edit"
-                android:textColor="@color/primary_text_color"
-                android:textSize="13dp" />
-
-        </LinearLayout>
-
-        <ImageView
-            android:id="@+id/bottom_div"
-            android:layout_width="0dp"
+        <TextView
+            android:id="@+id/menu_recipe_item"
+            android:layout_width="22dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:text="&#8942;"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/recipe_photo_pager"
-            app:srcCompat="@color/colorTransBg" />
+            android:textColor="@color/primary_text_color"
+            android:textSize="18sp" />
+
     </android.support.constraint.ConstraintLayout>
 
 </FrameLayout>

@@ -1,12 +1,10 @@
 package com.mattyws.udacity.cookner.viewmodel;
 
-import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
 import android.content.Context;
 
-import com.mattyws.udacity.cookner.database.AppDatabase;
-import com.mattyws.udacity.cookner.database.RecipeRepository;
+import com.mattyws.udacity.cookner.database.CooknerRepository;
 import com.mattyws.udacity.cookner.database.entities.Ingredient;
 import com.mattyws.udacity.cookner.database.entities.Picture;
 import com.mattyws.udacity.cookner.database.entities.Recipe;
@@ -16,14 +14,14 @@ import java.util.List;
 
 public class RecipeViewModel extends ViewModel {
 
-    private RecipeRepository mRepository;
+    private CooknerRepository mRepository;
     private LiveData<Recipe> recipeLiveData;
     private LiveData<List<Ingredient>> recipeIngredients;
     private LiveData<List<Step>> recipeSteps;
     private LiveData<List<Picture>> recipePictures;
 
     public RecipeViewModel(Context context, long recipeId) {
-        mRepository = new RecipeRepository(context);
+        mRepository = new CooknerRepository(context);
         recipeLiveData = mRepository.getRecipeById(recipeId);
         recipeIngredients = mRepository.getRecipeIngredients(recipeId);
         recipePictures = mRepository.getRecipePictures(recipeId);

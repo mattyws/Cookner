@@ -30,6 +30,7 @@ import com.mattyws.udacity.cookner.ui.RecyclerViewClickListener;
 import com.mattyws.udacity.cookner.ui.adapters.IngredientListAdapter;
 import com.mattyws.udacity.cookner.ui.adapters.StepListAdapter;
 import com.mattyws.udacity.cookner.ui.helpers.StepListItemTouchHelper;
+import com.mattyws.udacity.cookner.viewmodel.RecipeViewModel;
 import com.mattyws.udacity.cookner.viewmodel.StepViewModel;
 import com.mattyws.udacity.cookner.viewmodel.StepViewModelFactory;
 
@@ -42,13 +43,23 @@ public class StepListFragment extends Fragment implements RecyclerViewClickListe
         StepListItemTouchHelper.RecyclerItemTouchHelperListener {
 
     private static final String TAG = StepListFragment.class.getCanonicalName();
+    private static final String RECIPE_ID = "recipe.id";
     private StepListAdapter mAdapter;
     private FragmentStepListBinding mDataBinding;
 //    private StepViewModel mViewModel;
     private StepListListener mListener;
+    private long mRecipeId;
 
 
     public StepListFragment() {}
+
+    public static StepListFragment newInstance(long recipeId){
+        StepListFragment fragment = new StepListFragment();
+        Bundle bundle = new Bundle();
+        bundle.putLong(RECIPE_ID, recipeId);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -66,6 +77,15 @@ public class StepListFragment extends Fragment implements RecyclerViewClickListe
         ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new StepListItemTouchHelper(
                 0, ItemTouchHelper.LEFT, this);
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(mDataBinding.stepListRv);
+
+        ViewModelProviders.of(getActivity()).get(RecipeViewModel.class).getRecipeStepsLiveData()
+                .observe(this, new Observer<List<Step>>() {
+                    @Override
+                    public void onChanged(@Nullable List<Step> steps) {
+                        mAdapter.swapLists(steps);
+                    }
+                });
+
         return mDataBinding.getRoot();
     }
 
@@ -115,6 +135,13 @@ public class StepListFragment extends Fragment implements RecyclerViewClickListe
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        Bundle bundle = getArguments();
+        if(bundle != null && bundle.containsKey(RECIPE_ID)){
+            mRecipeId = bundle.getLong(RECIPE_ID);
+        } else if(bundle != null) {
+            throw new RuntimeException(context.toString()
+                    + " must pass RECIPE_ID as argument");
+        }
         if (context instanceof StepListListener) {
             mListener = (StepListListener) context;
         } else {

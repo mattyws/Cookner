@@ -4,8 +4,11 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -14,6 +17,7 @@ import com.mattyws.udacity.cookner.R;
 import com.mattyws.udacity.cookner.database.entities.Picture;
 import com.mattyws.udacity.cookner.database.entities.Recipe;
 import com.mattyws.udacity.cookner.ui.RecyclerViewClickListener;
+import com.mattyws.udacity.cookner.ui.fragments.IngredientListFragment;
 
 import java.util.List;
 
@@ -24,11 +28,13 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
     private Context mContext;
     private List<Recipe> mRecipes;
     private RecyclerViewClickListener mListener;
+    private RecipeListAdapterListener mListListener;
 
-    public RecipeListAdapter(Context mContext, List<Recipe> recipes, RecyclerViewClickListener listener) {
+    public RecipeListAdapter(Context mContext, List<Recipe> recipes, RecyclerViewClickListener listener, RecipeListAdapterListener listListener) {
         this.mContext = mContext;
         this.mRecipes = recipes;
         this.mListener = listener;
+        this.mListListener = listListener;
     }
 
     @NonNull
@@ -50,6 +56,29 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
                 mListener.onClick(recipeViewHolder, recipeViewHolder.id);
             }
         });
+        recipeViewHolder.mMenuRecipeItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PopupMenu popup = new PopupMenu(mContext, recipeViewHolder.mMenuRecipeItem);
+                //inflating menu from xml resource
+                popup.inflate(R.menu.recipe_options_menu);
+                //adding click listener
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.menu_delete:
+                                Log.d(TAG, "onMenuItemClick: ");
+                                mListListener.onRecipeDelete(i);
+                                break;
+                        }
+                        return false;
+                    }
+                });
+                //displaying the popup
+                popup.show();
+            }
+        });
     }
 
     @Override
@@ -69,9 +98,8 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
     }
 
     public void delete(int position){
-        Recipe recipe = mRecipes.get(position);
         mRecipes.remove(position);
-        notifyDataSetChanged();
+        notifyItemChanged(position);
     }
 
     public Recipe get(int position){
@@ -83,11 +111,16 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
         notifyItemInserted(adapterPosition);
     }
 
+    public interface RecipeListAdapterListener {
+        void onRecipeDelete(int pos);
+    }
+
     public class RecipeViewHolder extends RecyclerView.ViewHolder{
 
         public long id;
         public TextView mRecipeName;
-        ViewPager mViewPager;
+        TextView mMenuRecipeItem;
+        public ViewPager mViewPager;
         ImagesPagerAdapter mAdapter;
         public ConstraintLayout mForegroundView, mBackgroundView;
 
@@ -96,6 +129,7 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
             mRecipeName = (TextView) itemView.findViewById(R.id.recipe_name);
             mForegroundView = (ConstraintLayout) itemView.findViewById(R.id.foreground_view);
             mBackgroundView = (ConstraintLayout) itemView.findViewById(R.id.background_view);
+            mMenuRecipeItem = (TextView) itemView.findViewById(R.id.menu_recipe_item);
 
             mViewPager = (ViewPager) itemView.findViewById(R.id.recipe_photo_pager);
             mAdapter = new ImagesPagerAdapter(mContext, null);

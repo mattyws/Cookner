@@ -16,7 +16,7 @@ import com.mattyws.udacity.cookner.database.entities.Step;
 
 import java.util.List;
 
-public class RecipeRepository {
+public class CooknerRepository {
 
     private RecipeDAO mRecipeDAO;
     private IngredientDAO mIngredientDAO;
@@ -29,7 +29,7 @@ public class RecipeRepository {
         void performOperation(Long newItemId);
     }
 
-    public RecipeRepository(Context context) {
+    public CooknerRepository(Context context) {
         AppDatabase db = AppDatabase.getInstance(context);
         mRecipeDAO = db.recipeDAO();
         mIngredientDAO = db.ingredientsDAO();
@@ -38,7 +38,7 @@ public class RecipeRepository {
         mAllUserRecipes = mRecipeDAO.getUserRecipes();
     }
 
-    public RecipeRepository(Application application, InsertDataListener listener) {
+    public CooknerRepository(Application application, InsertDataListener listener) {
         AppDatabase db = AppDatabase.getInstance(application);
         mRecipeDAO = db.recipeDAO();
         mIngredientDAO = db.ingredientsDAO();
