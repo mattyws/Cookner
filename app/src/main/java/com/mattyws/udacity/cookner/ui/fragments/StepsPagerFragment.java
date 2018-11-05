@@ -35,11 +35,8 @@ public class StepsPagerFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static StepsPagerFragment newInstance(long recipeId){
+    public static StepsPagerFragment newInstance(){
         StepsPagerFragment fragment = new StepsPagerFragment();
-        Bundle bundle = new Bundle();
-        bundle.putLong(RECIPE_ID, recipeId);
-        fragment.setArguments(bundle);
         return fragment;
     }
 

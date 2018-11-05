@@ -40,11 +40,11 @@ public class CookingViewActivity extends AppCompatActivity
         mRecipeViewModel = ViewModelProviders.of(this, factory)
                 .get(RecipeViewModel.class);
 
-        IngredientListFragment mIngredientListFragment = IngredientListFragment.newInstance(mRecipeId, true);
+        IngredientListFragment mIngredientListFragment = IngredientListFragment.newInstance(true);
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.ingredient_list_holder, mIngredientListFragment)
                 .commit();
-        StepsPagerFragment mStepsPagerFragment = StepsPagerFragment.newInstance(mRecipeId);
+        StepsPagerFragment mStepsPagerFragment = StepsPagerFragment.newInstance();
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.step_content_holder, mStepsPagerFragment)
                 .commit();

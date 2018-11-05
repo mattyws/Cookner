@@ -28,6 +28,7 @@ import com.mattyws.udacity.cookner.databinding.FragmentStepListBinding;
 import com.mattyws.udacity.cookner.ui.FormActivity;
 import com.mattyws.udacity.cookner.ui.RecyclerViewClickListener;
 import com.mattyws.udacity.cookner.ui.adapters.IngredientListAdapter;
+import com.mattyws.udacity.cookner.ui.adapters.RecipeListAdapter;
 import com.mattyws.udacity.cookner.ui.adapters.StepListAdapter;
 import com.mattyws.udacity.cookner.ui.helpers.StepListItemTouchHelper;
 import com.mattyws.udacity.cookner.viewmodel.RecipeViewModel;
@@ -43,20 +44,27 @@ public class StepListFragment extends Fragment implements RecyclerViewClickListe
         StepListItemTouchHelper.RecyclerItemTouchHelperListener {
 
     private static final String TAG = StepListFragment.class.getCanonicalName();
+    public static final String READ_ONLY = "read_only";
     private static final String RECIPE_ID = "recipe.id";
+
+    private boolean readOnly = false;
+
     private StepListAdapter mAdapter;
     private FragmentStepListBinding mDataBinding;
-//    private StepViewModel mViewModel;
     private StepListListener mListener;
-    private long mRecipeId;
 
 
     public StepListFragment() {}
 
-    public static StepListFragment newInstance(long recipeId){
+    public static StepListFragment newInstance(){
+        StepListFragment fragment = new StepListFragment();
+        return fragment;
+    }
+
+    public static StepListFragment newInstance(boolean readOnly){
         StepListFragment fragment = new StepListFragment();
         Bundle bundle = new Bundle();
-        bundle.putLong(RECIPE_ID, recipeId);
+        bundle.putBoolean(READ_ONLY, readOnly);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -74,9 +82,11 @@ public class StepListFragment extends Fragment implements RecyclerViewClickListe
                 new DividerItemDecoration(mDataBinding.getRoot().getContext(),
                 DividerItemDecoration.VERTICAL));
 
-        ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new StepListItemTouchHelper(
-                0, ItemTouchHelper.LEFT, this);
-        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(mDataBinding.stepListRv);
+        if(!readOnly) {
+            ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new StepListItemTouchHelper(
+                    0, ItemTouchHelper.LEFT, this);
+            new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(mDataBinding.stepListRv);
+        }
 
         ViewModelProviders.of(getActivity()).get(RecipeViewModel.class).getRecipeStepsLiveData()
                 .observe(this, new Observer<List<Step>>() {
@@ -95,10 +105,12 @@ public class StepListFragment extends Fragment implements RecyclerViewClickListe
 
     @Override
     public void onClick(RecyclerView.ViewHolder view, long id) {
-        Intent editStepIntent = new Intent(getContext(), FormActivity.class);
-        editStepIntent.putExtra(FormActivity.FORMULARY, FormActivity.STEP_FORM);
-        editStepIntent.putExtra(FormActivity.ITEM_ID, id);
-        startActivity(editStepIntent);
+        if(!readOnly) {
+            Intent editStepIntent = new Intent(getContext(), FormActivity.class);
+            editStepIntent.putExtra(FormActivity.FORMULARY, FormActivity.STEP_FORM);
+            editStepIntent.putExtra(FormActivity.ITEM_ID, id);
+            startActivity(editStepIntent);
+        }
     }
 
     @Override
@@ -122,9 +134,8 @@ public class StepListFragment extends Fragment implements RecyclerViewClickListe
                 public void onDismissed(Snackbar transientBottomBar, int event) {
 //                    super.onDismissed(transientBottomBar, event);
                     if(event == Snackbar.Callback.DISMISS_EVENT_TIMEOUT) {
-                        Log.d(TAG, "onDismissed: ");
-                        mListener.onStepSwipedDismiss(removedStep);
-//                        mViewModel.delete(removedStep);
+                        ViewModelProviders.of(getActivity()).get(RecipeViewModel.class)
+                                .delete(removedStep);
                     }
                 }
             });
@@ -136,33 +147,18 @@ public class StepListFragment extends Fragment implements RecyclerViewClickListe
     public void onAttach(Context context) {
         super.onAttach(context);
         Bundle bundle = getArguments();
-        if(bundle != null && bundle.containsKey(RECIPE_ID)){
-            mRecipeId = bundle.getLong(RECIPE_ID);
-        } else if(bundle != null) {
-            throw new RuntimeException(context.toString()
-                    + " must pass RECIPE_ID as argument");
+        if(bundle != null && bundle.containsKey(READ_ONLY)){
+            readOnly = bundle.getBoolean(READ_ONLY);
         }
-        if (context instanceof StepListListener) {
-            mListener = (StepListListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+        if(!readOnly) {
+            if (context instanceof StepListListener) {
+                mListener = (StepListListener) context;
+            } else {
+                throw new RuntimeException(context.toString()
+                        + " must implement IngredientListListener");
+            }
         }
     }
-
-//    public void fetchAndPopulateRecipeSteps(long recipeId){
-//        if(mViewModel == null) {
-//            StepViewModelFactory factory = new StepViewModelFactory(getActivity(), recipeId);
-//            mViewModel = ViewModelProviders.of(this, factory)
-//                    .get(StepViewModel.class);
-//        }
-//        mViewModel.getRecipeSteps().observe(this, new Observer<List<Step>>() {
-//            @Override
-//            public void onChanged(@Nullable List<Step> steps) {
-//                setSteps(steps);
-//            }
-//        });
-//    }
 
     public interface StepListListener{
         void onStepSwipedDismiss(Step deletedStep);

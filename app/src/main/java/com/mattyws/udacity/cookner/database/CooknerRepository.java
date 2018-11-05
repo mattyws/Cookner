@@ -35,7 +35,6 @@ public class CooknerRepository {
         mIngredientDAO = db.ingredientsDAO();
         mStepsDAO = db.stepDAO();
         mPictureDAO = db.pictureDAO();
-        mAllUserRecipes = mRecipeDAO.getUserRecipes();
     }
 
     public CooknerRepository(Application application, InsertDataListener listener) {
@@ -44,7 +43,6 @@ public class CooknerRepository {
         mIngredientDAO = db.ingredientsDAO();
         mStepsDAO = db.stepDAO();
         mPictureDAO = db.pictureDAO();
-        mAllUserRecipes = mRecipeDAO.getUserRecipes();
         this.mListener = listener;
     }
 
@@ -72,8 +70,8 @@ public class CooknerRepository {
 
     public LiveData<List<Picture>> getRecipePictures(long recipeId){return mPictureDAO.getRecipePictures(recipeId);}
 
-    public LiveData<List<Recipe>> getAllUserRecipes() {
-        return mAllUserRecipes;
+    public LiveData<List<Recipe>> getAllUserRecipes(String userId) {
+        return mRecipeDAO.getUserRecipes(userId);
     }
 
     public void insert(Recipe recipe){

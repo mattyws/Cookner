@@ -24,14 +24,12 @@ public class IngredientListAdapter extends RecyclerView.Adapter<IngredientListAd
     private Context mContext;
     private List<Ingredient> mIngredients;
     private RecyclerViewClickListener mListener;
-    private boolean swipeActivated;
 
     public IngredientListAdapter(Context mContext, List<Ingredient> ingredients,
-                                 RecyclerViewClickListener listener, boolean swipeActivated) {
+                                 RecyclerViewClickListener listener) {
         this.mContext = mContext;
         this.mIngredients = ingredients;
         this.mListener = listener;
-        this.swipeActivated = swipeActivated;
     }
 
     @NonNull

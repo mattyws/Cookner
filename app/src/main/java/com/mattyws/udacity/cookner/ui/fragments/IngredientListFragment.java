@@ -47,26 +47,20 @@ public class IngredientListFragment extends Fragment implements
     private boolean readOnly = false;
 
 
-    private IngredientViewModel mViewModel;
     private IngredientListListener mListener;
-    private long mRecipeId;
 
 
     public IngredientListFragment() {
     }
 
-    public static IngredientListFragment newInstance(long recipeId){
+    public static IngredientListFragment newInstance(){
         IngredientListFragment fragment = new IngredientListFragment();
-        Bundle bundle = new Bundle();
-        bundle.putLong(RECIPE_ID, recipeId);
-        fragment.setArguments(bundle);
         return fragment;
     }
 
-    public static IngredientListFragment newInstance(long recipeId, boolean readOnly){
+    public static IngredientListFragment newInstance(boolean readOnly){
         IngredientListFragment fragment = new IngredientListFragment();
         Bundle bundle = new Bundle();
-        bundle.putLong(RECIPE_ID, recipeId);
         bundle.putBoolean(READ_ONLY, readOnly);
         fragment.setArguments(bundle);
         return fragment;
@@ -78,7 +72,7 @@ public class IngredientListFragment extends Fragment implements
         // Inflate the layout for this fragment
         mDataBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_ingredient_list,
                 container, false);
-        mAdapter = new IngredientListAdapter(mDataBinding.getRoot().getContext(), null, this, readOnly);
+        mAdapter = new IngredientListAdapter(mDataBinding.getRoot().getContext(), null, this);
         mDataBinding.ingredientListRv.setLayoutManager(new LinearLayoutManager(mDataBinding.getRoot().getContext()));
         mDataBinding.ingredientListRv.setAdapter(mAdapter);
         mDataBinding.ingredientListRv.setItemAnimator(new DefaultItemAnimator());
@@ -100,10 +94,6 @@ public class IngredientListFragment extends Fragment implements
         return mDataBinding.getRoot();
     }
 
-    public void setIngredients(List<Ingredient> mIngredients) {
-        mAdapter.swapLists(mIngredients);
-    }
-
     @Override
     public void onIngredientSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
         Log.d(TAG, "onRecipeSwiped: ");
@@ -116,8 +106,6 @@ public class IngredientListFragment extends Fragment implements
             snackbar.setAction("UNDO", new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
-                    // undo is selected, restore the deleted item
                     mAdapter.restoreItem(removedIngredient, deletedIndex);
                 }
             });
@@ -128,8 +116,8 @@ public class IngredientListFragment extends Fragment implements
 //                    super.onDismissed(transientBottomBar, event);
                     if(event == Snackbar.Callback.DISMISS_EVENT_TIMEOUT) {
                         Log.d(TAG, "onDismissed: ");
-                        mListener.onIngredientSwipedDismiss(removedIngredient);
-//                        mViewModel.delete(removedIngredient);
+                        ViewModelProviders.of(getActivity()).get(RecipeViewModel.class)
+                                .delete(removedIngredient);
                     }
                 }
             });
@@ -143,12 +131,6 @@ public class IngredientListFragment extends Fragment implements
         Bundle bundle = getArguments();
         if(bundle != null && bundle.containsKey(READ_ONLY)){
             readOnly = bundle.getBoolean(READ_ONLY);
-        }
-        if(bundle != null && bundle.containsKey(RECIPE_ID)){
-            mRecipeId = bundle.getLong(RECIPE_ID);
-        } else if (bundle != null){
-            throw new RuntimeException(context.toString()
-                    + " must have RECIPE_ID argument.");
         }
         if(!readOnly) {
             if (context instanceof IngredientListListener) {

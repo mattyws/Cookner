@@ -14,8 +14,8 @@ import java.util.List;
 @Dao
 public interface RecipeDAO {
 
-    @Query("SELECT * FROM recipe")
-    LiveData<List<Recipe>> getUserRecipes();
+    @Query("SELECT * FROM recipe WHERE user_id = :userId")
+    LiveData<List<Recipe>> getUserRecipes(String userId);
 
     @Insert
     long insert(Recipe recipe);

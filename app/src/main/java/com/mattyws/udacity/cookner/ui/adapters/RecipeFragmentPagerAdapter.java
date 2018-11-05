@@ -22,39 +22,20 @@ public class RecipeFragmentPagerAdapter extends FragmentStatePagerAdapter {
 
     private static final String TAG = RecipeFragmentPagerAdapter.class.getCanonicalName();
     private final Context mContext;
-    private long mRecipeId;
 
     public RecipeFragmentPagerAdapter(Context context, FragmentManager manager){
         super(manager);
         this.mContext = context;
     }
 
-    public void setRecipeId(long recipeId){
-        mRecipeId = recipeId;
-    }
-
-//    public void setRecipeIngredients(List<Ingredient> ingredients){
-//        if(mIngredientListFragment != null){
-//            Log.d(TAG, "setRecipeIngredients: " + ingredients.size());
-//            mIngredientListFragment.setIngredients(ingredients);
-//        }
-//    }
-//
-//    public void setRecipeSteps(List<Step> steps){
-//        Log.d(TAG, "setRecipeSteps: " + steps.size());
-//        if(mStepListFragment != null){
-//            mStepListFragment.setSteps(steps);
-//        }
-//    }
-
     @Override
     public Fragment getItem(int i) {
         Log.d(TAG, "getItem: " + i);
         switch (i){
             case 0:
-                return IngredientListFragment.newInstance(mRecipeId);
+                return IngredientListFragment.newInstance();
             case 1:
-                return StepListFragment.newInstance(mRecipeId);
+                return StepListFragment.newInstance();
         }
         return null;
     }

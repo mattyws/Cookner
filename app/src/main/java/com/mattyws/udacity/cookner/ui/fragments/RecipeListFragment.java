@@ -3,11 +3,14 @@ package com.mattyws.udacity.cookner.ui.fragments;
 
 import android.app.Activity;
 import android.app.ActivityOptions;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -39,17 +42,20 @@ public class RecipeListFragment extends Fragment implements
         RecyclerViewClickListener,
         RecipeListAdapter.RecipeListAdapterListener
 {
-
-
     private static final String TAG = RecipeListFragment.class.getCanonicalName();
+    private static final String USER_ID = "user.id";
     private RecipeListAdapter mAdapter;
     private FragmentRecipeListBinding mDataBinding;
 
-    private RecipesViewModel mViewModel;
     private RecipeListFragmentListener mListener;
 
 
     public RecipeListFragment() {}
+
+    public static RecipeListFragment newInstance() {
+        RecipeListFragment fragment = new RecipeListFragment();
+        return fragment;
+    }
 
 
     @Override
@@ -63,7 +69,29 @@ public class RecipeListFragment extends Fragment implements
         mDataBinding.recipeListRv.setLayoutManager(new GridLayoutManager(mDataBinding.getRoot().getContext(), 2));
         mDataBinding.recipeListRv.setAdapter(mAdapter);
         mDataBinding.recipeListRv.setItemAnimator(new DefaultItemAnimator());
+        ViewModelProviders.of(getActivity()).get(RecipesViewModel.class).getAllUserRecipes()
+                .observe(this, new Observer<List<Recipe>>() {
+                    @Override
+                    public void onChanged(@Nullable List<Recipe> recipes) {
+                        swapLists(recipes);
+                    }
+                });
         return mDataBinding.getRoot();
+    }
+
+    private void swapLists(List<Recipe> recipes) {
+        mAdapter.swapLists(recipes);
+        for (int i = 0; i < recipes.size(); i++){
+            final int finalI = i;
+            ViewModelProviders.of(getActivity()).get(RecipesViewModel.class)
+                    .getRecipePictures(recipes.get(i).getId())
+                    .observe(this, new Observer<List<Picture>>() {
+                        @Override
+                        public void onChanged(@Nullable List<Picture> pictures) {
+                            mAdapter.setViewPictures(finalI, pictures);
+                        }
+                    });
+        }
     }
 
     public void setRecipes(List<Recipe> recipes){
@@ -109,8 +137,6 @@ public class RecipeListFragment extends Fragment implements
         snackbar.setAction("UNDO", new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                // undo is selected, restore the deleted item
                 mAdapter.restoreItem(removedRecipe, pos);
             }
         });
@@ -120,8 +146,8 @@ public class RecipeListFragment extends Fragment implements
             public void onDismissed(Snackbar transientBottomBar, int event) {
 //                    super.onDismissed(transientBottomBar, event);
                 if(event == Snackbar.Callback.DISMISS_EVENT_TIMEOUT) {
-//                    mViewModel.delete(removedRecipe);
-                    mListener.onRecipeDelete(removedRecipe);
+                    ViewModelProviders.of(getActivity()).get(RecipesViewModel.class)
+                                .delete(removedRecipe);
                 }
             }
         });

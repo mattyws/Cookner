@@ -44,14 +44,6 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <ProgressBar
-        android:id="@+id/content_progress_bar"
-        android:layout_width="@dimen/progress_bar_dimen"
-        android:layout_height="@dimen/progress_bar_dimen"
-        android:layout_gravity="center"
-        android:visibility="visible"
-        />
-
     <LinearLayout
         android:id="@+id/content_holder"
         android:layout_width="match_parent"

@@ -15,9 +15,9 @@ public class RecipesViewModelFactory extends ViewModelProvider.NewInstanceFactor
         mUserId = userId;
     }
 
-//    @Override
-//    public <T extends ViewModel> T create(Class<T> modelClass) {
-//        //noinspection unchecked
-//        return (T) new RecipeViewModel(mContext, mRecipeId);
-//    }
+    @Override
+    public <T extends ViewModel> T create(Class<T> modelClass) {
+        //noinspection unchecked
+        return (T) new RecipesViewModel(mContext, mUserId);
+    }
 }

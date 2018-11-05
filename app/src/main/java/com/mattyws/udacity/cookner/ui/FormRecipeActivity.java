@@ -51,19 +51,16 @@ public class FormRecipeActivity extends AppCompatActivity implements
         CooknerRepository.InsertDataListener,
         IngredientListFragment.IngredientListListener,
         StepListFragment.StepListListener
-
 {
 
     // TODO: comment
-    // TODO: add photo picker and add database logic to handle photos
 
     private static final int RC_PHOTO_PICKER = 1;
-    public static final int ADD_INGREDIENT_ACTION = 2;
-    public static final int ADD_STEP_ACTION = 3;
     public static final long DEFAULT_RECIPE_ID = -1;
     private static final String TAG = FormRecipeActivity.class.getCanonicalName();
     public static final String RECIPE_NAME = "recipe.name";
     public static final String RECIPE_ID = "recipe.id";
+    public static final String USER_ID = "user.id";
     private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 222;
 
 
@@ -76,8 +73,6 @@ public class FormRecipeActivity extends AppCompatActivity implements
     private List<Step> mSteps;
     private List<Picture> mPictures;
 
-//    private IngredientListFragment mIngredientListFragment;
-//    private StepListFragment mStepListFragment;
     private ImagePagerFragment mImagePagerFragment;
 
     private boolean isFABOpen = false;
@@ -87,7 +82,6 @@ public class FormRecipeActivity extends AppCompatActivity implements
     private ViewPager mViewPager;
     private RecipeFragmentPagerAdapter mPagerAdapter;
     LinearLayout mContentFrameLayout;
-    ProgressBar mProgressBar;
     FloatingActionButton fabMenu, fabAddIngredient, fabAddStep, fabAddPhoto;
     LinearLayout fabIngredientLinearLayout, fabStepLinearLayout, fabPhotoLinearLayout;
     View fabBGLayout;
@@ -102,15 +96,17 @@ public class FormRecipeActivity extends AppCompatActivity implements
 
         Intent intent = getIntent();
         if(!intent.hasExtra(RECIPE_ID)) {
-            if (!intent.hasExtra(RECIPE_NAME)) {
+            if (!intent.hasExtra(RECIPE_NAME) || !intent.hasExtra(USER_ID)) {
                 finish();
             }
 
+            String userId = intent.getStringExtra(USER_ID);
             String name = intent.getStringExtra(RECIPE_NAME);
             mRepository = new CooknerRepository(getApplication(), this);
 
             Recipe recipe = new Recipe();
             recipe.setName(name);
+            recipe.setUserId(userId);
             mRepository.insert(recipe);
         } else {
             mRecipeId = intent.getLongExtra(RECIPE_ID, DEFAULT_RECIPE_ID);
@@ -131,23 +127,7 @@ public class FormRecipeActivity extends AppCompatActivity implements
         mIngredients = new ArrayList<>();
         mSteps = new ArrayList<>();
 
-//        mIngredientListFragment = new IngredientListFragment();
-//        getSupportFragmentManager().beginTransaction()
-//                .add(R.id.ingredient_list_holder, mIngredientListFragment)
-//                .commit();
-
-//        mStepListFragment = new StepListFragment();
-//        getSupportFragmentManager().beginTransaction()
-//                .add(R.id.step_list_holder, mStepListFragment)
-//                .commit();
-//
-        mImagePagerFragment = new ImagePagerFragment();
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.pictures_pager_holder, mImagePagerFragment)
-                .commit();
-
         mContentFrameLayout = (LinearLayout) findViewById(R.id.content_holder);
-        mProgressBar = (ProgressBar) findViewById(R.id.content_progress_bar);
         fabIngredientLinearLayout = (LinearLayout) findViewById(R.id.ingredient_fab_linear_layout);
         fabStepLinearLayout = (LinearLayout) findViewById(R.id.step_fab_linear_layout);
         fabPhotoLinearLayout = (LinearLayout) findViewById(R.id.photo_fab_linear_layout);
@@ -234,29 +214,15 @@ public class FormRecipeActivity extends AppCompatActivity implements
     private void populateUI(Recipe recipe) {
         mCollapsingToolbar.setTitle(recipe.getName());
         mRecipe = recipe;
+
         mPagerAdapter = new RecipeFragmentPagerAdapter(this, getSupportFragmentManager());
-        mPagerAdapter.setRecipeId(mRecipe.getId());
         mViewPager.setAdapter(mPagerAdapter);
         mTabLayout.setupWithViewPager(mViewPager);
-//        mViewModel.getRecipeIngredientsLiveData().observe(this, new Observer<List<Ingredient>>() {
-//            @Override
-//            public void onChanged(@Nullable List<Ingredient> ingredients) {
-//                setRecipeIngredients(ingredients);
-//            }
-//        });
-//        mViewModel.getRecipeStepsLiveData().observe(this, new Observer<List<Step>>() {
-//            @Override
-//            public void onChanged(@Nullable List<Step> steps) {
-//                setRecipeSteps(steps);
-//            }
-//        });
-        mViewModel.getRecipePictures().observe(this, new Observer<List<Picture>>() {
-            @Override
-            public void onChanged(@Nullable List<Picture> pictures) {
-                setRecipePictures(pictures);
-                setContentVisible();
-            }
-        });
+
+        mImagePagerFragment = ImagePagerFragment.newInstance();
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.pictures_pager_holder, mImagePagerFragment)
+                .commit();
     }
 
     @Override
@@ -347,13 +313,6 @@ public class FormRecipeActivity extends AppCompatActivity implements
             startActivity(cookingModeIntent);
         }
         return super.onOptionsItemSelected(item);
-    }
-
-
-
-    private void setContentVisible() {
-        mProgressBar.setVisibility(View.GONE);
-        mContentFrameLayout.setVisibility(View.VISIBLE);
     }
 
     @Override

@@ -3,6 +3,8 @@ package com.mattyws.udacity.cookner.viewmodel;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.ViewModel;
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.mattyws.udacity.cookner.database.CooknerRepository;
@@ -11,23 +13,18 @@ import com.mattyws.udacity.cookner.database.entities.Recipe;
 
 import java.util.List;
 
-public class RecipesViewModel extends AndroidViewModel {
+public class RecipesViewModel extends ViewModel {
 
     CooknerRepository mRepository;
     private LiveData<List<Recipe>> mAllUserRecipes;
 
-    public RecipesViewModel(@NonNull Application context) {
-        super(context);
+    public RecipesViewModel(Context context, String userId) {
         mRepository = new CooknerRepository(context);
-        mAllUserRecipes = mRepository.getAllUserRecipes();
+        mAllUserRecipes = mRepository.getAllUserRecipes(userId);
     }
 
     public LiveData<List<Recipe>> getAllUserRecipes() {
-        if(mAllUserRecipes != null) {return mAllUserRecipes;}
-        else{
-            mAllUserRecipes = mRepository.getAllUserRecipes();
-            return mAllUserRecipes;
-        }
+        return mAllUserRecipes;
     }
 
     public LiveData<Recipe> getRecipeById(long id) {
